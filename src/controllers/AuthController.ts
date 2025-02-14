@@ -1,8 +1,9 @@
-import type { Request, Response } from 'express'
+import { type Request, type Response } from 'express'
 import User from '../models/User';
-import { hashPassword } from '../utils/auth';
+import { checkPassword, hashPassword } from '../utils/auth';
 import { generateToken } from '../utils/token';
 import { AuthEmail } from '../emails/AuthEmail';
+import { generateJWT } from '../utils/jwt';
 
 export class AuthController {
 
@@ -53,6 +54,43 @@ export class AuthController {
             await user.save();
 
             res.json('Account confirmed successfully.');
+        } catch (error) {
+            // console.log(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    static login = async (req: Request, res: Response) => {
+        try {
+            const { email, password } = req.body;
+
+            // Revisar que el usuario exista
+            const user = await User.findOne({ where: { email } });
+            if (!user) {
+                const error = new Error('User not found.');
+                res.status(404).json({ error: error.message });
+                return;
+            }
+
+            // Revisar si el usuario tiene la cuenta confirmada
+            if (!user.confirm) {
+                const error = new Error('Account not confirmed.');
+                res.status(403).json({ error: error.message });
+                return;
+            }
+
+            // Revisar si el password es correcto
+            const isPasswordCorrect = await checkPassword(password, user.password);
+            if (!isPasswordCorrect) {
+                const error = new Error('Invalid Credentials.');
+                res.status(401).json({ error: error.message });
+                return;
+            }
+
+            // Retornar el JWT
+            const token = generateJWT(user.id);
+
+            res.json(token);
         } catch (error) {
             // console.log(error);
             res.status(500).json({ error: 'Internal server error' });
