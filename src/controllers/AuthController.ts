@@ -168,9 +168,52 @@ export class AuthController {
         }
     }
 
-    static user = async (req: Request, res: Response) => { 
+    static user = async (req: Request, res: Response) => {
         try {
             res.json(req.user);
+        } catch (error) {
+            // console.log(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    static updateCurrentUserPassword = async (req: Request, res: Response) => {
+        try {
+            const { current_password, password } = req.body;
+            const { id } = req.user;
+
+            const user = await User.findByPk(id);
+            const isPasswordCorrect = await checkPassword(current_password, user.password);
+            if (!isPasswordCorrect) {
+                const error = new Error('Invalid Credentials');
+                res.status(401).json({ error: error.message });
+                return;
+            }
+
+            user.password = await hashPassword(password);
+            await user.save();
+
+            res.json('Password updated successfully');
+        } catch (error) {
+            // console.log(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    static checkPassword = async (req: Request, res: Response) => {
+        try {
+            const { password } = req.body;
+            const { id } = req.user;
+
+            const user = await User.findByPk(id);
+            const isPasswordCorrect = await checkPassword(password, user.password);
+            if (!isPasswordCorrect) {
+                const error = new Error('Invalid Credentials');
+                res.status(401).json({ error: error.message });
+                return;
+            }
+
+            res.json('Password correct!');
         } catch (error) {
             // console.log(error);
             res.status(500).json({ error: 'Internal server error' });
