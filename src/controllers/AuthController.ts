@@ -96,4 +96,75 @@ export class AuthController {
             res.status(500).json({ error: 'Internal server error' });
         }
     }
+
+    static forgotPassword = async (req: Request, res: Response) => {
+        try {
+            const { email, password } = req.body;
+
+            // Revisar que el usuario exista
+            const user = await User.findOne({ where: { email } });
+            if (!user) {
+                const error = new Error('User not found.');
+                res.status(404).json({ error: error.message });
+                return;
+            }
+
+            user.token = generateToken();
+
+            await user.save();
+            await AuthEmail.sendPasswordResetToken({
+                email: user.email,
+                name: user.name,
+                token: user.token
+            });
+
+            res.json('Please check your email for instructions.');
+        } catch (error) {
+            // console.log(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    static validateToken = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.body;
+            const tokenExists = await User.findOne({ where: { token } });
+
+            if (!tokenExists) {
+                const error = new Error('Invalid token');
+                res.status(401).json({ error: error.message });
+                return;
+            }
+
+            res.json(tokenExists);
+        } catch (error) {
+            // console.log(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    static resetPasswordWithToken = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.params;
+            const { password } = req.body;
+
+            const user = await User.findOne({ where: { token } });
+            if (!user) {
+                const error = new Error('Invalid token');
+                res.status(401).json({ error: error.message });
+                return;
+            }
+
+            // Asignar el nuevo password
+            user.password = await hashPassword(password);
+            user.token = null;
+            await user.save();
+
+            res.json('Password updated successfully')
+
+        } catch (error) {
+            // console.log(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
 }
