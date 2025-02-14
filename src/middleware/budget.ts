@@ -51,6 +51,17 @@ export const validateBudgetInputs = async (req: Request, res: Response, next: Ne
         .isNumeric().withMessage('La cantidad no es valida.')
         .custom((value) => value > 0).withMessage(' El presupuesto debe ser mayor a 0')
         .run(req);
-        
+
     next()
+}
+
+export const hasAccess = async (req: Request, res: Response, next: NextFunction) => {
+
+    if (req.budget.userId !== req.user.id) {
+        const error = new Error('Invalid action');
+        res.status(401).json({ error: error.message });
+        return;
+    }
+
+    next();
 }
