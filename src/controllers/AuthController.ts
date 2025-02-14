@@ -31,7 +31,30 @@ export class AuthController {
 
             res.json('Account created successfully.');
         } catch (error) {
-            console.log(error);
+            // console.log(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    static confirmAccount = async (req: Request, res: Response) => {
+        try {
+            const { token } = req.body;
+            const user = await User.findOne({ where: { token } });
+
+            if (!user) {
+                const error = new Error('Invalid token');
+                res.status(401).json({ error: error.message });
+                return;
+            }
+
+            user.confirm = true;
+            user.token = null;
+
+            await user.save();
+
+            res.json('Account confirmed successfully.');
+        } catch (error) {
+            // console.log(error);
             res.status(500).json({ error: 'Internal server error' });
         }
     }
