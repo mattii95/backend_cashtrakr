@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express'
 import Budgets from '../models/Budget'
+import Expense from '../models/Expense';
 
 export class BudgetController {
 
@@ -31,7 +32,10 @@ export class BudgetController {
 
     static getById = async (req: Request, res: Response) => {
         try {
-            res.json(req.budget);
+            const budget = await Budgets.findByPk(req.budget.id, {
+                include: [Expense]
+            })
+            res.json(budget);
         } catch (error) {
             // console.log(error);
             res.status(500).json({ error: 'Internal server error' });
