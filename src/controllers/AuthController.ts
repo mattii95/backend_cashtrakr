@@ -1,4 +1,4 @@
-import { type Request, type Response } from 'express'
+import { type Request, type Response } from 'express';
 import User from '../models/User';
 import { checkPassword, hashPassword } from '../utils/auth';
 import { generateToken } from '../utils/token';
@@ -131,7 +131,7 @@ export class AuthController {
             const tokenExists = await User.findOne({ where: { token } });
 
             if (!tokenExists) {
-                const error = new Error('Invalid token');
+                const error = new Error('Invalid Token');
                 res.status(401).json({ error: error.message });
                 return;
             }
@@ -150,7 +150,7 @@ export class AuthController {
 
             const user = await User.findOne({ where: { token } });
             if (!user) {
-                const error = new Error('Invalid token');
+                const error = new Error('Invalid Token');
                 res.status(401).json({ error: error.message });
                 return;
             }
@@ -162,6 +162,15 @@ export class AuthController {
 
             res.json('Password updated successfully')
 
+        } catch (error) {
+            // console.log(error);
+            res.status(500).json({ error: 'Internal server error' });
+        }
+    }
+
+    static user = async (req: Request, res: Response) => { 
+        try {
+            res.json(req.user);
         } catch (error) {
             // console.log(error);
             res.status(500).json({ error: 'Internal server error' });
