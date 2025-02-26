@@ -10,79 +10,79 @@ const router = Router();
 router.use(limiter);
 
 router.post('/create-account',
-    body('name')
-        .notEmpty().withMessage('El nombre no puede ir vacio'),
-    body('password')
-        .isLength({ min: 8 }).withMessage('La contraseña debe ser mínimo 8 caracteres.'),
-    body('email')
-        .isEmail().withMessage('Email no valido'),
-    handleInputErrors,
-    AuthController.createAccount
+  body('name')
+    .notEmpty().withMessage('El nombre no puede ir vacio'),
+  body('password')
+    .isLength({ min: 8 }).withMessage('La contraseña debe ser mínimo 8 caracteres.'),
+  body('email')
+    .isEmail().withMessage('Email no valido'),
+  handleInputErrors,
+  AuthController.createAccount
 );
 
 router.post('/confirm-account',
-    body('token')
-        .notEmpty().withMessage('Token no valido')
-        .isLength({ min: 6, max: 6 }).withMessage('Token no valido'),
-    handleInputErrors,
-    AuthController.confirmAccount
+  body('token')
+    .notEmpty().withMessage('Token no valido')
+    .isLength({ min: 6, max: 6 }).withMessage('Token no valido'),
+  handleInputErrors,
+  AuthController.confirmAccount
 );
 
 router.post('/login',
-    body('email')
-        .isEmail().withMessage('Email no valido'),
-    body('password')
-        .notEmpty().withMessage('La contraseña es obligatoria'),
-    handleInputErrors,
-    AuthController.login
+  body('email')
+    .isEmail().withMessage('Email no valido'),
+  body('password')
+    .notEmpty().withMessage('La contraseña es obligatoria'),
+  handleInputErrors,
+  AuthController.login
 );
 
 router.post('/forgot-password',
-    body('email')
-        .isEmail().withMessage('Email no valido'),
-    handleInputErrors,
-    AuthController.forgotPassword
+  body('email')
+    .isEmail().withMessage('Email no valido'),
+  handleInputErrors,
+  AuthController.forgotPassword
 );
 
 router.post('/validate-token',
-    body('token')
-        .notEmpty().withMessage('Token no valido')
-        .isLength({ min: 6, max: 6 }).withMessage('Token no valido'),
-    handleInputErrors,
-    AuthController.validateToken
+  body('token')
+    .notEmpty().withMessage('Token no valido')
+    .isLength({ min: 6, max: 6 }).withMessage('Token no valido'),
+  handleInputErrors,
+  AuthController.validateToken
 );
 
 router.post('/reset-password/:token',
-    param('token')
-        .notEmpty().withMessage('Token no valido')
-        .isLength({ min: 6, max: 6 }).withMessage('Token no valido'),
-    body('password')
-        .isLength({ min: 8 }).withMessage('La contraseña debe ser mínimo 8 caracteres.'),
-    handleInputErrors,
-    AuthController.resetPasswordWithToken
+  param('token')
+    .notEmpty().withMessage('Token no valido')
+    .isLength({ min: 6, max: 6 }).withMessage('Token no valido'),
+  body('password')
+    .isLength({ min: 8 }).withMessage('La contraseña debe ser mínimo 8 caracteres.'),
+  handleInputErrors,
+  AuthController.resetPasswordWithToken
 );
 
 router.get('/user',
-    authenticate,
-    AuthController.user
+  authenticate,
+  AuthController.user
 );
 
 router.post('/update-password',
-    authenticate,
-    body('current_password')
-        .notEmpty().withMessage('La contraseña actual no puede ir vacio'),
-    body('password')
-        .isLength({ min: 8 }).withMessage('La contraseña nueva debe ser mínimo 8 caracteres.'),
-    handleInputErrors,
-    AuthController.updateCurrentUserPassword
+  authenticate,
+  body('current_password')
+    .notEmpty().withMessage('La contraseña actual no puede ir vacio'),
+  body('password')
+    .isLength({ min: 8 }).withMessage('La contraseña nueva debe ser mínimo 8 caracteres.'),
+  handleInputErrors,
+  AuthController.updateCurrentUserPassword
 )
 
 router.post('/check-password',
-    authenticate,
-    body('password')
-        .notEmpty().withMessage('La contraseña actual no puede ir vacio'),
-    handleInputErrors,
-    AuthController.checkPassword
+  authenticate,
+  body('password')
+    .notEmpty().withMessage('La contraseña actual no puede ir vacio'),
+  handleInputErrors,
+  AuthController.checkPassword
 )
 
 export default router;

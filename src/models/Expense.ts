@@ -2,26 +2,26 @@ import { Table, Column, Model, DataType, ForeignKey, BelongsTo, AllowNull } from
 import Budgets from './Budget';
 
 @Table({
-    tableName: 'expenses'
+  tableName: 'expenses'
 })
 class Expense extends Model {
-    @AllowNull(false)
-    @Column({
-        type: DataType.STRING(100)
-    })
-    declare name: string
+  @AllowNull(false)
+  @Column({
+    type: DataType.STRING(100)
+  })
+  declare name: string
 
-    @AllowNull(false)
-    @Column({
-        type: DataType.DECIMAL
-    })
-    declare amount: number
+  @AllowNull(false)
+  @Column({
+    type: DataType.DECIMAL
+  })
+  declare amount: number
 
-    @ForeignKey(() => Budgets)
-    declare budgetId: number
+  @ForeignKey(() => Budgets)
+  declare budgetId: number
 
-    @BelongsTo(() => Budgets)
-    declare budget: Budgets
+  @BelongsTo(() => Budgets)
+  declare budget: Budgets
 }
 
 export default Expense;

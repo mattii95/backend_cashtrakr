@@ -18,9 +18,9 @@ router.param('expenseId', validateExpenseId);
 router.param('expenseId', validateExpenseExists);
 
 router.post('/',
-    validateBudgetInputs,
-    handleInputErrors,
-    BudgetController.create
+  validateBudgetInputs,
+  handleInputErrors,
+  BudgetController.create
 )
 
 router.get('/', BudgetController.getAll)
@@ -28,9 +28,9 @@ router.get('/', BudgetController.getAll)
 router.get('/:budgetId', BudgetController.getById)
 
 router.put('/:budgetId',
-    validateBudgetInputs,
-    handleInputErrors,
-    BudgetController.updateById
+  validateBudgetInputs,
+  handleInputErrors,
+  BudgetController.updateById
 )
 
 router.delete('/:budgetId', BudgetController.deleteById)
@@ -38,15 +38,15 @@ router.delete('/:budgetId', BudgetController.deleteById)
 /** Routes for expenses */
 /** Arquitectura ROA */
 router.post('/:budgetId/expenses',
-    validateExpenseInputs,
-    handleInputErrors,
-    ExpenseController.create
+  validateExpenseInputs,
+  handleInputErrors,
+  ExpenseController.create
 );
 router.get('/:budgetId/expenses/:expenseId', ExpenseController.getById);
 router.put('/:budgetId/expenses/:expenseId',
-    validateExpenseInputs,
-    handleInputErrors,
-    ExpenseController.updateById
+  validateExpenseInputs,
+  handleInputErrors,
+  ExpenseController.updateById
 );
 router.delete('/:budgetId/expenses/:expenseId', ExpenseController.deleteById);
 

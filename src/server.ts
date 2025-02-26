@@ -6,13 +6,13 @@ import budgetRouter from './routes/budgetRouter'
 import authRouter from './routes/authRouter'
 
 async function conectDB() {
-    try {
-        await db.authenticate();
-        db.sync();
-        console.log(colors.blue.bold('Conexión exitosa a la DB'));
-    } catch (error) {
-        console.log(colors.red.bold('Fallo la conexión a la DB'));
-    }
+  try {
+    await db.authenticate();
+    db.sync();
+    console.log(colors.blue.bold('Conexión exitosa a la DB'));
+  } catch (error) {
+    console.log(colors.red.bold('Fallo la conexión a la DB'));
+  }
 }
 conectDB();
 
